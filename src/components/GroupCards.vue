@@ -1,9 +1,9 @@
 <template>
   <div class="group group-cards">
     <div class="group-header">
-      <h2 class="group-title">{{title}}</h2>
-      <button class="btn group-btn-delete" @click="onDeleteGroup">
-        <i class="material-icons group-icon-delete" v-if="custom">delete</i>
+      <h2 class="group-title">{{group.title}}</h2>
+      <button class="btn group-btn-delete" @click="toggleShow('modal')">
+        <i class="material-icons" v-if="group.custom">delete</i>
       </button>
     </div>
     <div class="group-filters">
@@ -21,38 +21,39 @@
       </button>
     </div>
     <CardItem
-      v-for="card in cards"
+      v-for="card in displayedCards"
       :key="card.id"
-      :title="card.title"
-      :description="card.description"
-      :done="card.done"
+      :card="card"
     />
-    <button class="btn group-btn-add" @click="onAddCard">
+    <button class="btn group-btn-add" @click="toggleShow('form')">
       <i class="large material-icons group-icon-add">add</i>
     </button>
+    <CreateForm
+      name="card"
+      v-if="show.form"
+      @close="toggleShow('form')"
+      @create="createCard"
+    />
+    <ConfirmModal
+      v-if="show.modal"
+      @confirm="onConfirm"
+    />
   </div>
 </template>
 
 <script>
+import { mapActions, mapGetters } from 'vuex'
 import CardItem from './CardItem.vue'
+import CreateForm from './CreateForm.vue'
+import ConfirmModal from './ConfirmModal.vue'
 
 export default {
   name: 'GroupCards',
 
   props: {
-    title: {
-      type: String,
-      default: ''
-    },
-
-    cards: {
-      type: Array,
-      default: () => ([])
-    },
-
-    custom: {
-      type: Boolean,
-      default: false
+    group: {
+      type: Object,
+      default: () => ({})
     }
   },
 
@@ -73,10 +74,24 @@ export default {
         }
       ],
 
-      activeFilter: 'all',
+      show: {
+        form: false,
+        modal: false
+      },
 
+      activeFilter: 'all',
       searchValue: ''
     }
+  },
+
+  computed: {
+    displayedCards() {
+      return this.cards.filter(card => card.groupId === this.group.id)
+    },
+
+    ...mapGetters([
+      'cards'
+    ])
   },
 
   methods: {
@@ -84,13 +99,40 @@ export default {
       this.activeFilter = event.target.name
     },
 
-    onAddCard() {},
+    toggleShow(name) {
+      this.show[name] = !this.show[name]
+    },
 
-    onDeleteGroup() {}
+    createCard(event) {
+      this.addItem({
+        item: {...event, groupId: this.group.id},
+        name: 'cards'
+      })
+
+      this.toggleShow('form')
+    },
+
+    onConfirm(event) {
+      if(event) {
+        this.deleteItem({
+          id: this.group.id,
+          name: 'groups'
+        })
+      }
+      
+      this.toggleShow('modal')
+    },
+
+    ...mapActions([
+      'addItem',
+      'deleteItem'
+    ])
   },
 
   components: {
-    CardItem
+    CardItem,
+    CreateForm,
+    ConfirmModal
   }
 }
 </script>

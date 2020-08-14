@@ -4,106 +4,78 @@
       <GroupCards
         v-for="group in mainGroup"
         :key="group.id"
-        :title="group.title"
-        :cards="group.cards"
+        :group="group"
       />
     </div>
     <div class="groups created-groups">
       <div class="created-groups-header">
-        <button class="btn" type="button">Add Group</button>
+        <button class="btn" type="button" @click="toggleShowForm">Add Group</button>
       </div>
       <GroupCards 
         v-for="group in customGroups"
         :key="group.id"
-        :title="group.title"
-        :cards="group.cards"
-        :custom="group.custom"
+        :group="group"
       />
     </div>
+    <CreateForm
+      name="group"
+      v-if="showCreateForm"
+      @close="toggleShowForm"
+      @create="createGroup"
+    />
   </div>
 </template>
 
 <script>
+import { mapActions, mapGetters } from 'vuex'
 import GroupCards from './components/GroupCards.vue'
+import CreateForm from './components/CreateForm.vue'
 
 export default {
   name: 'App',
 
   data() {
     return {
-      groupsCard: [
-        {
-          id: 1,
-          title: 'main',
-          custom: false,
-          cards: [
-            {
-              id: 1,
-              title: 'Test',
-              description: 'test test test test test',
-              done: false
-            },
-            {
-              id: 2,
-              title: 'Test',
-              description: 'test test test test test',
-              done: false
-            },
-            {
-              id: 3,
-              title: 'Test',
-              description: 'test test test test test',
-              done: false
-            }
-          ]
-        },
-        {
-          id: 2,
-          title: 'custom',
-          custom: true,
-          cards: [
-            {
-              id: 1,
-              title: 'Test',
-              description: 'test test test test test',
-              done: false
-            },
-            {
-              id: 2,
-              title: 'Test',
-              description: 'test test test test test',
-              done: false
-            },
-            {
-              id: 3,
-              title: 'Test',
-              description: 'test test test test test',
-              done: false
-            }
-          ]
-        },
-        {
-          id: 3,
-          title: 'custom',
-          custom: true,
-          cards: []
-        }
-      ]
+      showCreateForm: false
     }
   },
 
   computed: {
     mainGroup() {
-      return this.groupsCard.filter((group) => !group.custom)
+      return this.groups.filter((group) => !group.custom)
     },
 
     customGroups() {
-      return this.groupsCard.filter((group) => group.custom)
-    }
+      return this.groups.filter((group) => group.custom)
+    },
+
+    ...mapGetters([
+      'groups'
+    ])
+  },
+
+  methods: {
+    toggleShowForm() {
+      this.showCreateForm = !this.showCreateForm
+    },
+
+    createGroup(event) {
+      this.addItem({
+        item: {...event, custom: true},
+        name: 'groups'
+      })
+
+      this.toggleShowForm()
+    },
+
+    ...mapActions([
+      'addItem'
+    ])
   },
 
   components: {
-    GroupCards
+    GroupCards,
+    CreateForm
   }
 }
 </script>
