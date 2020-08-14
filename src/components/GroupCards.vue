@@ -86,7 +86,13 @@ export default {
 
   computed: {
     displayedCards() {
-      return this.cards.filter(card => card.groupId === this.group.id)
+      return this.cards
+        .filter(card => {
+          return (
+            card.groupId === this.group.id &&
+            card.title.toLowerCase().includes(this.searchValue.toLowerCase())
+          )
+        })
     },
 
     ...mapGetters([
