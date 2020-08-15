@@ -7,6 +7,7 @@
   align-items: center;
   box-shadow: 0px 0px 5px 0px rgba(120,120,120,0.5);
   padding: 0 8px 8px 8px;
+  position: relative;
 
   &-header {
     display: flex;
@@ -19,18 +20,12 @@
   }
 
   &-btn-add {
-    display: flex;
-    justify-content: center;
-    align-items: center;
     width: 48px;
     height: 48px;
     margin-top: 8px;
   }
 
   &-btn-delete {
-    display: flex;
-    justify-content: center;
-    align-items: center;
     width: 32px;
     height: 32px;
     background-color: transparent;
@@ -58,6 +53,19 @@
       border: 1px solid $grey;
       border-radius: 2px;
       padding: 2px;
+
+      @media screen and (max-width: 320px) {
+        min-width: 150px;
+      }
+    }
+
+    &-buttons {
+      display: flex;
+
+      @media screen and (max-width: 600px) {
+        margin-top: 4px;
+        margin-left: -4px;
+      }
     }
 
     & .btn {
@@ -68,5 +76,20 @@
         border: 2px solid $grey-42;
       }
     }
+
+    @media screen and (max-width: 600px) {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+
+  &-drop-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    z-index: 7;
+    border: 2px solid $grey-600;
   }
 }
