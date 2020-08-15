@@ -27,6 +27,9 @@ button {
   color: $white;
   padding: 4px 8px;
   border-radius: 2px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
   &:hover {
     background-color: $primary-light;
@@ -40,4 +43,10 @@ button {
 
 .line-through {
   text-decoration: line-through;
+}
+
+.text-overflow {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
