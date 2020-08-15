@@ -2,10 +2,13 @@
   <div class="create-form-overlay">
     <div class="create-form">
       <div class="create-form-title">create {{name}}</div>
+
       <div class="create-form-body">
         <input type="text" class="create-form-input" placeholder="Title" v-model="titleValue">
+
         <textarea class="create-form-description" placeholder="Description" v-model="descriptionValue" v-if="name === 'card'"></textarea>
       </div>
+
       <div class="create-form-action">
         <button
           class="btn"
@@ -14,6 +17,7 @@
         >
           Create
         </button>
+        
         <button class="btn" @click.prevent="onClose">Close</button>
       </div>
     </div>
