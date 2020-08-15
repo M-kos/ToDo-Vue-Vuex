@@ -15,42 +15,10 @@ export default new Vuex.Store({
         id: 1,
         title: 'main',
         custom: false
-      },
-      {
-        id: 2,
-        title: 'custom',
-        custom: true
-      },
-      {
-        id: 3,
-        title: 'custom',
-        custom: true
       }
     ],
 
-    cards: [
-      {
-        id: 1,
-        groupId: 1,
-        title: 'Test',
-        description: 'test test test test test',
-        done: false
-      },
-      {
-        id: 2,
-        groupId: 2,
-        title: 'Test',
-        description: 'test test test test test',
-        done: true
-      },
-      {
-        id: 3,
-        groupId: 2,
-        title: 'Test',
-        description: 'test test test test test',
-        done: false
-      }
-    ]
+    cards: []
   },
 
   mutations: {
@@ -77,6 +45,8 @@ export default new Vuex.Store({
         if (card.id === payload.id) {
           card.groupId = payload.groupId
         }
+
+        return card
       })
     }
   },
@@ -88,11 +58,17 @@ export default new Vuex.Store({
         const cards = localStorage.getItem(key.cards)
 
         if (groups) {
-          commit('setData', JSON.parse(groups), 'groups')
+          commit('setData', {
+            value: JSON.parse(groups),
+            name: 'groups'
+          })
         }
 
         if (cards) {
-          commit('setData', JSON.parse(cards), 'cards')
+          commit('setData', {
+            value: JSON.parse(cards),
+            name: 'cards'
+          })
         }
       } catch (error) {
         console.error(error)
@@ -107,7 +83,7 @@ export default new Vuex.Store({
           name: payload.name
         }
       )
-      // commit('saveData', payload.name)
+      commit('saveData', payload.name)
     },
 
     addItem({ commit, state }, payload) {
@@ -115,15 +91,17 @@ export default new Vuex.Store({
         value: [...state[payload.name], payload.item],
         name: payload.name
       })
-      // commit('saveData', payload.name)
+      commit('saveData', payload.name)
     },
 
     changeCardStatus({ commit }, id) {
       commit('changeCardStatus', id)
+      commit('saveData', 'cards')
     },
 
     changeItemGroup({ commit }, payload) {
       commit('changeItemGroup', payload)
+      commit('saveData', 'cards')
     }
   },
 
